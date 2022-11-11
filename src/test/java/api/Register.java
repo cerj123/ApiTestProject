@@ -1,8 +1,8 @@
 package api;
 
 public class Register {
-    private String email;
-    private String password;
+    private final String email;
+    private final String password;
 
     public Register(String email, String password) {
         this.email = email;

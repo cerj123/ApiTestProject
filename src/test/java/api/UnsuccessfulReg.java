@@ -1,13 +1,13 @@
 package api;
 
-public class UnsuccessReg {
+public class UnsuccessfulReg {
     private String error;
 
-    public UnsuccessReg() {
+    public UnsuccessfulReg() {
         super();
     }
 
-    public UnsuccessReg(String error) {
+    public UnsuccessfulReg(String error) {
         this.error = error;
     }
 

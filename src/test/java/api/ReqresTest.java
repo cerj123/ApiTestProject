@@ -3,12 +3,13 @@ package api;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
-public class RegresTest {
+public class ReqresTest {
     private final static String URL = "https://reqres.in/";
 
     @Test
@@ -54,14 +55,14 @@ public class RegresTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecError400());
         String error = "Missing password";
         Register user = new Register("sydney@fife", "");
-        UnsuccessReg unsuccessReg = given()
+        UnsuccessfulReg unsuccessfulReg = given()
                 .body(user)
                 .when()
                 .post("api/register")
                 .then().log().all()
-                .extract().as(UnsuccessReg.class);
-        Assertions.assertNotNull(unsuccessReg.getError());
-        Assertions.assertEquals(error, unsuccessReg.getError());
+                .extract().as(UnsuccessfulReg.class);
+        Assertions.assertNotNull(unsuccessfulReg.getError());
+        Assertions.assertEquals(error, unsuccessfulReg.getError());
     }
 
     @Test
@@ -79,5 +80,31 @@ public class RegresTest {
 
         System.out.println(sortedYears);
         System.out.println(years);
+    }
+
+    @Test
+    public void deleteUserTest(){
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecUnique(204));
+        given()
+                .when()
+                .delete("api/users/2")
+                .then().log().all();
+    }
+
+    @Test
+    public void timeTest() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
+        UserTime user = new UserTime("morpheus", "zion resident");
+        UserTimeResponse response = given()
+                .body(user)
+                .when()
+                .put("api/users/2")
+                .then().log().all()
+                .extract().as(UserTimeResponse.class);
+
+        String regexCurrentTime = "(.{11})$";
+        String regexServerTime = "(.{5})$";
+        String currentTime = Clock.systemUTC().instant().toString().replaceAll(regexCurrentTime, "");
+        Assertions.assertEquals(currentTime, response.getUpdatedAt().replaceAll(regexServerTime, ""));
     }
 }
