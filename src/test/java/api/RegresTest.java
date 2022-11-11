@@ -20,19 +20,19 @@ public class RegresTest {
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
 
-        users.forEach(x->Assertions.assertTrue(x.getAvatar().contains(x.getId().toString())));
-        Assertions.assertTrue(users.stream().allMatch(x->x.getEmail().endsWith("@reqres.in")));
+        users.forEach(x -> Assertions.assertTrue(x.getAvatar().contains(x.getId().toString())));
+        Assertions.assertTrue(users.stream().allMatch(x -> x.getEmail().endsWith("@reqres.in")));
 
         List<String> avatars = users.stream().map(UserData::getAvatar).collect(Collectors.toList());
-        List<String> ids = users.stream().map(x->x.getId().toString()).collect(Collectors.toList());
+        List<String> ids = users.stream().map(x -> x.getId().toString()).collect(Collectors.toList());
 
-        for (int i = 0; i < avatars.size(); i++){
+        for (int i = 0; i < avatars.size(); i++) {
             Assertions.assertTrue(avatars.get(i).contains(ids.get(i)));
         }
     }
 
     @Test
-    public void successfulRegTest(){
+    public void successfulRegTest() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         Integer id = 4;
         String token = "QpwL5tke4Pnpja7X4";
@@ -50,7 +50,7 @@ public class RegresTest {
     }
 
     @Test
-    public void unsuccessfulRegTest(){
+    public void unsuccessfulRegTest() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecError400());
         String error = "Missing password";
         Register user = new Register("sydney@fife", "");
@@ -62,5 +62,22 @@ public class RegresTest {
                 .extract().as(UnsuccessReg.class);
         Assertions.assertNotNull(unsuccessReg.getError());
         Assertions.assertEquals(error, unsuccessReg.getError());
+    }
+
+    @Test
+    public void yearsSortTest() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
+        List<ResourceData> resources = given()
+                .when()
+                .get("api/unknown")
+                .then().log().all()
+                .extract().body().jsonPath().getList("data", ResourceData.class);
+
+        List<Integer> years = resources.stream().map(ResourceData::getYear).collect(Collectors.toList());
+        List<Integer> sortedYears = years.stream().sorted().collect(Collectors.toList());
+        Assertions.assertEquals(sortedYears, years);
+
+        System.out.println(sortedYears);
+        System.out.println(years);
     }
 }
