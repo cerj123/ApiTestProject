@@ -1,6 +1,6 @@
-package api;
+package com.model;
 
-public class UserTimeResponse extends UserTime{
+public class UserTimeResponse extends UserTime {
     private String updatedAt;
 
     public UserTimeResponse(){

@@ -1,4 +1,4 @@
-package api;
+package com.model;
 
 public class ResourceData {
     private Integer id;

@@ -1,4 +1,4 @@
-package api;
+package com.model;
 
 public class SuccessReg {
     private Integer id;
